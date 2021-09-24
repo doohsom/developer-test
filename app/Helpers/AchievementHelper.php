@@ -35,7 +35,18 @@ class AchievementHelper
     $this->unlock($description->description, 'Badge', $user->id, $description->points);
    }
 
-   
+   public function checkCommentWritten(User $user)
+   {
+       
+    $data = Data::comment()->pluck('points')->toArray();    
+    $countCommentWritten = $user->comments()->count;
+    if (! in_array($countCommentWritten, $data)) {
+        return;
+    }
+    $description = Data::lessons()->where('points', $countCommentWritten)->first();
+    $this->unlock($description->descripiton, 'Comment', $user->id, $description->points);
+    return true;
+   }
 
    private function unlock($description, $type, $user_id, $points)
    {
